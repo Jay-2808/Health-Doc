@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Health Doc</title>
+    <link rel="icon" href="images/logo1.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/home.css">
+</head>
+  <body>
+    <audio autoplay loop>
+        <source src="../Assets/bgm.mp3" type="audio/mp3" />
+    </audio>
+    <nav class="navbar-dark navbar navbar-expand-lg">
+        <a class="navbar-brand" href="home.html">
+            <img src="images/main-logo.png" width="150" height="75" class="d-inline-block align-top" alt="">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" style="margin-left: 50%;">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="DiseaseDiagnosis.html">Disease diagnosis</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="EndemicSimulation.html">Endemic Simulation</a>
+                </li>
+                <li class="nav-item active">
+                            <a class="nav-link" href="bot.html">HealthBot</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <video autoplay muted loop plays-inline id="myVideo" class="back-video">
+        <source src="images/bg-video.mp4" type="video/mp4">
+    </video>
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <img src="images/logo1.png" width="200" height="240" class="d-inline-block align-top" alt="logo">
+                <div class="main-text">  
+                    <h1 data-text="HealthDoc">HealthDoc</h1>
+                    <div class="desc">
+                    <p>Health Doc is a platform that connects patients with doctors. Patients can book appointments with doctors and get prescriptions online. Doctors can view the appointments and prescribe medicines to the patients.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Automatic quotes generation using api-->
+    <div class="quote-container">
+        <div class="container">
+           <h1 class="quote-symbol">&ldquo;</h1>
+            <h4 id="quote-container"></h4>
+            <h1 class="quote-symbol">&rdquo;</h1>
+        </div>
+    </div>
+
+    <!--chat bot navigation icon-->
+    <div class="chat-icon">
+        <a href="bot.html">
+            <img src="images/medbot.png" alt="chat-icon">
+        </a>
+    </div>
+
+    <!-- Our Project-->
+    <div class="project">
+        <div class="container">
+            <h1>Our Project</h1>
+            <div class="row" style=" margin: 0;padding: 0 15px; margin-top: 0; padding-right: 0;padding-left: 0;">
+                <div class="col-md-6 order-md-2 text-center">
+                    
+                    <img src="images/robot.png" class="img-fluid" alt="robot" style="max-width: 100%; height: auto; margin-right: 0px;">
+                </div>
+                
+                <div class="col-md-6 order-md-1">
+                    <div class="desc" style="margin-top: 10px;">
+                        <p>This project aims to develop a comprehensive super application tailored specifically for healthcare needs. The cornerstone of this app is a sophisticated chatbot, built using advanced Natural Language Processing (NLP) techniques, offering multi-language support and a voice assistant to make interactions as intuitive as possible. Users will be able to upload medical documents and images of affected body parts, which the app will analyze to provide predictions and insights using AI-driven diagnostics.</p>
+                        <p>Moreover, the app will feature an endemic simulation module that allows users to monitor current disease outbreaks, track their spread, and assess the risks in real-time. This tool will be invaluable for both healthcare professionals and the general public in staying informed and prepared.</p>
+                        <p>To ensure easy accessibility, we plan to integrate our app with popular messaging platforms like WhatsApp and Telegram, allowing users to access healthcare services and information directly from these apps. This feature will make healthcare advice and services just a message away, no matter where the user is.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- features -->
+    <div class="features" id="feature">
+        <div class="container">
+            <h1>Features</h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature">
+                        <a href="bot.html">
+                            <img src="images/medbot.png" alt="feature1">
+                        </a>
+                        <h2>Chatbot</h2>
+                        <p>Our chatbot is built using advanced NLP techniques and offers multi-language support and a voice assistant to make interactions as intuitive as possible.</p>
+                        <a href="bot.html">
+                            <button type="button" class="btn btn-primary">
+                                Get Started
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature">
+                        <img src="images/diagnostics.png" alt="feature2">
+                        <h2>AI-driven Diagnostics</h2>
+                        <p>Users can upload medical documents and images of affected body parts, which the app will analyze to provide predictions and insights using AI-driven diagnostics.</p>
+                        <a href="DiseaseDiagnosis.html">
+                            <button type="button" class="btn btn-primary">
+                                Get Started
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature">
+                        <img src="images/outbreak.png" alt="feature3">
+                        <h2>Endemic Simulation</h2>
+                        <p>Users can monitor current disease outbreaks, track their spread, and assess the risks in real-time using the endemic simulation module.</p>
+                        <a href="EndemicSimulation.html">
+                            <button type="button" class="btn btn-primary">
+                                Get Started
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- footer -->
+        <footer>
+            <div class="container" id="contact">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2>HealthDoc</h2>
+                        <p>Health Doc is a platform that connects patients with doctors. Patients can book appointments with doctors and get prescriptions online. Doctors can view the appointments and prescribe medicines to the patients.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contact Us</h2>
+                        <p>HealthDoc</p>
+                        <p>Chennai, India</p>
+                        <p>Phone: +91 8838862927</p>
+                        <p>Email: jayachandirank28@gmail.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contributors</h2>
+                        <p>Jayachandiran K</p>
+                        <p>Dinesh Kumar E</p>
+                        <p>Shamprakash R</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="credits">
+            <div class="container text-center">
+                <p>Designed by Jayachandiran K</p>
+            </div>
+        </div>
+
+
+    <script>
+function displayTypingEffect(element, text) {
+            let i = 0;
+            const typingSpeed = 20;
+            let currentText = '';
+            function typeCharacter() {
+                if (i < text.length) {
+                    const nextChar = text.charAt(i);
+                    currentText += nextChar;
+                    i++;
+        
+                    element.innerHTML = currentText;
+                    setTimeout(typeCharacter, typingSpeed);
+                } else {
+                    element.innerHTML += '<br>';
+                }
+            }
+        
+            typeCharacter();
+        }
+
+        fetch('http://127.0.0.1:5000/quotes', {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            const quoteElement = document.getElementById('quote-container');
+            if (data.quotes && typeof data.quotes === 'string') {
+                displayTypingEffect(quoteElement, data.quotes);
+            } else if (Array.isArray(data.quotes) && data.quotes.length > 0) {
+
+                displayTypingEffect(quoteElement, data.quotes[0]);
+            } else {
+                console.error('Unexpected data format:', data);
+            }
+            document.getElementById('quote-container').innerHTML += '<h1>&ldquo;</h1>';
+            document.getElementById('quote-container').innerHTML += '<h1>&rdquo;</h1>';
+            console.log('Quote:', data.quotes);
+        })
+        .catch(error => console.error('Error:', error));
+    </script>
+
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

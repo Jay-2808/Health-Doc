@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Health Doc - Endemic Simulation</title>
+
+    <!-- mobile responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- ** Plugins Needed for the Project ** -->    
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/themify-icons.css">
+    <link rel="stylesheet" href="styles/slick.css">
+    <link rel="stylesheet" href="styles/slick-theme.css">
+    <link rel="stylesheet" href="styles/aos.css">
+    <link rel="stylesheet" href="styles/w3.css">
+    <link rel="stylesheet" href="styles/skin.css">
+    <!-- Main Stylesheet -->
+    <link href="styles/style.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.4.2/css/all.css' integrity='sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns' crossorigin='anonymous'>
+    
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .model-card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .model-card-header {
+            background: linear-gradient(to right, #ff3157, #ff6d7e);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .model-card-body {
+            padding: 20px;
+            background-color: white;
+        }
+        
+        .simulation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .control-value {
+            color: #ff3157;
+            font-weight: bold;
+        }
+        
+        .range-slider {
+            width: 100%;
+            accent-color: #ff3157;
+        }
+        
+        .btn-simulate {
+            background: linear-gradient(to right, #ff3157, #ff6d7e);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-simulate:hover {
+            box-shadow: 0 5px 15px rgba(255, 49, 87, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .model-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 0;
+        }
+        
+        .model-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .model-tab.active {
+            background-color: white;
+            border-bottom: 2px solid #ff3157;
+            color: #ff3157;
+            font-weight: bold;
+        }
+        
+        .model-content {
+            display: none;
+        }
+        
+        .model-content.active {
+            display: block;
+        }
+        
+        .model-description {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .particle-simulation-container {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        .particle-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-sm {
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+        
+        .infection-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .susceptible-dot {
+            background-color: rgba(54, 162, 235, 1);
+        }
+        
+        .infected-dot {
+            background-color: rgba(255, 99, 132, 1);
+        }
+        
+        .recovered-dot {
+            background-color: rgba(75, 192, 192, 1);
+        }
+        
+        /* Dark mode support */
+        [light-mode="dark"] .model-card-body {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        [light-mode="dark"] .model-description {
+            background-color: #444;
+        }
+        
+        [light-mode="dark"] .model-tab {
+            background-color: #444;
+            border-color: #555;
+            color: #ddd;
+        }
+        
+        [light-mode="dark"] .model-tab.active {
+            background-color: #333;
+        }
+        
+        [light-mode="dark"] .particle-simulation-container {
+            background-color: #333;
+        }
+        
+        [light-mode="dark"] #particle-simulation {
+            border-color: #444;
+        }
+
+        .feature-showcase {
+            background-color: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #ff3157;
+        }
+
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            background: linear-gradient(to right, #ff3157, #ff6d7e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        [light-mode="dark"] .feature-card {
+            background: #2d2d2d;
+            color: #f0f0f0;
+        }
+
+        [light-mode="dark"] .feature-showcase {
+            background-color: #1a1a1a;
+        }
+    </style>
+</head>
+
+<body id="top" data-spy="scroll" data-target="#navbar-spy" class="position-relative">
+    <script>
+        // Function to toggle between light and dark modes
+        function toggleDarkMode() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                document.body.setAttribute('light-mode', 'dark');
+            } else {
+                document.body.removeAttribute('light-mode');
+            }
+        }
+
+        // Initial theme detection and toggling
+        toggleDarkMode();
+
+        // Listen for changes in system theme preference
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            toggleDarkMode();
+        });
+    </script>
+    
+    <!-- start of preloader -->
+    <div class="preloader position-fixed d-flex align-items-center justify-content-center">
+        <div class="block">
+            <div class="loader-image mb-20">
+                <img src="images/logo2.png">
+            </div>
+            <div class="loader-text text-uppercase">
+                <span class="mb-1">HEALTHDOC</span>
+                <span>ENDEMIC SIMULATION</span>
+            </div>
+        </div>
+    </div>    
+    <!-- end of preloader -->
+    
+    <!-- start of header -->
+    <header class="header-nav position-relative bg-light-gray">
+        <div class="container">
+            <nav class="navbar navbar-expand-xl navbar-light px-0">
+                <a class="navbar-brand p-0" href="index.html"><img class="img-fluid" src="images/logo.png" alt="logo" height="90" width="250"></a>
+
+                <button class="navbar-toggler bg-white p-0" type="button" data-toggle="collapse" data-target="#navlinks" aria-controls="navlinks" aria-expanded="false" aria-label="Toggle navigation" style="border-radius: 12px; width: 40px; height: 40px;">
+                    <svg class="nav-toggle-icon" viewBox="0 0 100 100" width="40" onclick="this.classList.toggle('active')">
+                        <path class="line top" d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"></path>
+                        <path class="line middle" d="m 70,50 h -40"></path>
+                        <path class="line bottom" d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"></path>
+                    </svg>
+                </button>
+                            
+                <!-- mobile-nav control button -->
+                
+                <div class="collapse navbar-collapse" id="navlinks">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="DiseaseDiagnosis.html">Disease diagnosis</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="EndemicSimulation.html">Endemic Simulation</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="bot.html">HealthBot</a>
+                        </li>
+                    </ul>
+                    <div class="navbar-button">
+                        <button class="btn-sm light-mode-button" aria-label="Toggle Light Mode" onclick="toggle_light_mode()">
+                            <span></span>
+                            <span></span>
+                        </button>
+                        <!--<a class="btn btn-sm btn-outline-primary" href="./apk/DermaScan.apk"><b>Download APK</b> <i class='fa fa-download' style="margin-left: 7px;"></i></a>-->
+                    </div>                
+                </div>
+                <!-- nav links -->
+            </nav>
+        </div>
+    </header>
+    <!-- end of header -->
+
+    <!-- start of simulation section -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="mb-4">Endemic <strong>Simulation</strong></h1>
+                    <p class="lead">Explore different mathematical models to simulate disease spread and endemic patterns</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="model-card">
+                        <div class="model-card-header">
+                            <h3 class="mb-0">Disease Spread Simulation Models</h3>
+                        </div>
+                        <div class="model-card-body">
+                            <div class="model-tabs">
+                                <div class="model-tab active" data-model="sir">SIR Model</div>
+                                <div class="model-tab" data-model="lstm">LSTM Model</div>
+                                <div class="model-tab" data-model="prophet">Prophet Model</div>
+                                <div class="model-tab" data-model="arima">ARIMA Model</div>
+                            </div>
+                            
+                            <!-- SIR Model -->
+                            <div id="sir-model" class="model-content active">
+                                <div class="model-description">
+                                    <h4>SIR Compartmental Model</h4>
+                                    <p>The SIR model divides the population into three compartments: Susceptible (S), Infected (I), and Recovered (R). The model simulates how individuals move between these compartments over time based on infection and recovery rates.</p>
+                                    <p><strong>Equations:</strong></p>
+                                    <p>dS/dt = -β × S × I</p>
+                                    <p>dI/dt = β × S × I - γ × I</p>
+                                    <p>dR/dt = γ × I</p>
+                                    <p>Where β is the transmission rate and γ is the recovery rate.</p>
+                                </div>
+                                
+                                <div class="simulation-controls">
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Total Population</span>
+                                            <span class="control-value" id="sir-population-value">1000</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="sir-population" min="100" max="10000" step="100" value="1000">
+                                        
+                                        <div class="control-label">
+                                            <span>Initial Infected</span>
+                                            <span class="control-value" id="sir-infected-value">10</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="sir-infected" min="1" max="100" step="1" value="10">
+                                        
+                                        <div class="control-label">
+                                            <span>Contact Rate (β)</span>
+                                            <span class="control-value" id="sir-beta-value">0.3</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="sir-beta" min="0.1" max="1.0" step="0.05" value="0.3">
+                                    </div>
+                                    
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Recovery Rate (γ)</span>
+                                            <span class="control-value" id="sir-gamma-value">0.1</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="sir-gamma" min="0.01" max="0.5" step="0.01" value="0.1">
+                                        
+                                        <div class="control-label">
+                                            <span>Simulation Days</span>
+                                            <span class="control-value" id="sir-days-value">100</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="sir-days" min="30" max="365" step="5" value="100">
+                                        
+                                        <button class="btn-simulate mt-4" id="sir-simulate">Start Simulation</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <canvas id="sir-chart"></canvas>
+                                </div>
+                                
+                                <div class="particle-simulation-container">
+                                    <h4 class="mt-3 mb-2">Interactive Population Simulation</h4>
+                                    <div class="particle-controls mb-2">
+                                        <button class="btn-simulate btn-sm" id="particle-start">Start</button>
+                                        <button class="btn-simulate btn-sm" id="particle-pause" disabled>Pause</button>
+                                        <button class="btn-simulate btn-sm" id="particle-reset">Reset</button>
+                                        <div class="control-label mt-2">
+                                            <span>Simulation Speed</span>
+                                            <input type="range" class="range-slider" id="simulation-speed" min="1" max="10" value="5">
+                                        </div>
+                                        <div class="infection-stats mt-2">
+                                            <span class="stats-item"><span class="status-dot susceptible-dot"></span> Susceptible: <span id="susceptible-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot infected-dot"></span> Infected: <span id="infected-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot recovered-dot"></span> Recovered: <span id="recovered-count">0</span></span>
+                                            <span class="stats-item">Day: <span id="simulation-day">0</span></span>
+                                        </div>
+                                    </div>
+                                    <canvas id="particle-simulation" width="600" height="300" style="border:1px solid #ddd; border-radius: 8px;"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- LSTM Model -->
+                            <div id="lstm-model" class="model-content">
+                                <div class="model-description">
+                                    <h4>LSTM (Long Short-Term Memory) Model</h4>
+                                    <p>LSTM is a type of recurrent neural network that can learn long-term dependencies in time series data. In disease modeling, LSTM can capture complex patterns and dependencies that may not be captured by traditional compartmental models.</p>
+                                    <p>Our simulation implements a simplified version of LSTM behavior using a time-dependent function with memory effects.</p>
+                                </div>
+                                
+                                <div class="simulation-controls">
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Total Population</span>
+                                            <span class="control-value" id="lstm-population-value">1000</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-population" min="100" max="10000" step="100" value="1000">
+                                        
+                                        <div class="control-label">
+                                            <span>Initial Cases</span>
+                                            <span class="control-value" id="lstm-initial-value">10</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-initial" min="1" max="100" step="1" value="10">
+                                        
+                                        <div class="control-label">
+                                            <span>Growth Rate</span>
+                                            <span class="control-value" id="lstm-growth-value">1.2</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-growth" min="0.8" max="2.0" step="0.05" value="1.2">
+                                    </div>
+                                    
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Memory Length</span>
+                                            <span class="control-value" id="lstm-memory-value">7</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-memory" min="1" max="14" step="1" value="7">
+                                        
+                                        <div class="control-label">
+                                            <span>Seasonality Factor</span>
+                                            <span class="control-value" id="lstm-seasonality-value">0.2</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-seasonality" min="0" max="0.5" step="0.05" value="0.2">
+                                        
+                                        <div class="control-label">
+                                            <span>Simulation Days</span>
+                                            <span class="control-value" id="lstm-days-value">100</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="lstm-days" min="30" max="365" step="5" value="100">
+                                        
+                                        <button class="btn-simulate mt-4" id="lstm-simulate">Start Simulation</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <canvas id="lstm-chart"></canvas>
+                                </div>
+                                
+                                <div class="particle-simulation-container">
+                                    <h4 class="mt-3 mb-2">Interactive Population Simulation</h4>
+                                    <div class="particle-controls mb-2">
+                                        <button class="btn-simulate btn-sm" id="particle-start">Start</button>
+                                        <button class="btn-simulate btn-sm" id="particle-pause" disabled>Pause</button>
+                                        <button class="btn-simulate btn-sm" id="particle-reset">Reset</button>
+                                        <div class="control-label mt-2">
+                                            <span>Simulation Speed</span>
+                                            <input type="range" class="range-slider" id="simulation-speed" min="1" max="10" value="5">
+                                        </div>
+                                        <div class="infection-stats mt-2">
+                                            <span class="stats-item"><span class="status-dot susceptible-dot"></span> Susceptible: <span id="susceptible-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot infected-dot"></span> Infected: <span id="infected-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot recovered-dot"></span> Recovered: <span id="recovered-count">0</span></span>
+                                            <span class="stats-item">Day: <span id="simulation-day">0</span></span>
+                                        </div>
+                                    </div>
+                                    <canvas id="particle-simulation" width="600" height="300" style="border:1px solid #ddd; border-radius: 8px;"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Prophet Model -->
+                            <div id="prophet-model" class="model-content">
+                                <div class="model-description">
+                                    <h4>Prophet Model</h4>
+                                    <p>Prophet is a forecasting procedure developed by Facebook that works well with time series data that have strong seasonal effects and multiple seasons of historical data. For endemic diseases, Prophet can model seasonal patterns, holidays, and trend changes.</p>
+                                    <p>Our simulation implements a simplified version of Prophet's approach using trend, seasonality, and holiday components.</p>
+                                </div>
+                                
+                                <div class="simulation-controls">
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Base Population</span>
+                                            <span class="control-value" id="prophet-population-value">10000</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-population" min="1000" max="100000" step="1000" value="10000">
+                                        
+                                        <div class="control-label">
+                                            <span>Trend Growth</span>
+                                            <span class="control-value" id="prophet-trend-value">0.01</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-trend" min="-0.05" max="0.05" step="0.005" value="0.01">
+                                        
+                                        <div class="control-label">
+                                            <span>Seasonal Amplitude</span>
+                                            <span class="control-value" id="prophet-seasonal-value">0.2</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-seasonal" min="0" max="0.5" step="0.05" value="0.2">
+                                    </div>
+                                    
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Holiday Impact</span>
+                                            <span class="control-value" id="prophet-holiday-value">0.3</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-holiday" min="0" max="1" step="0.1" value="0.3">
+                                        
+                                        <div class="control-label">
+                                            <span>Noise Level</span>
+                                            <span class="control-value" id="prophet-noise-value">0.05</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-noise" min="0" max="0.2" step="0.01" value="0.05">
+                                        
+                                        <div class="control-label">
+                                            <span>Simulation Days</span>
+                                            <span class="control-value" id="prophet-days-value">365</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="prophet-days" min="30" max="730" step="30" value="365">
+                                        
+                                        <button class="btn-simulate mt-4" id="prophet-simulate">Start Simulation</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <canvas id="prophet-chart"></canvas>
+                                </div>
+                                
+                                <div class="particle-simulation-container">
+                                    <h4 class="mt-3 mb-2">Interactive Population Simulation</h4>
+                                    <div class="particle-controls mb-2">
+                                        <button class="btn-simulate btn-sm" id="particle-start">Start</button>
+                                        <button class="btn-simulate btn-sm" id="particle-pause" disabled>Pause</button>
+                                        <button class="btn-simulate btn-sm" id="particle-reset">Reset</button>
+                                        <div class="control-label mt-2">
+                                            <span>Simulation Speed</span>
+                                            <input type="range" class="range-slider" id="simulation-speed" min="1" max="10" value="5">
+                                        </div>
+                                        <div class="infection-stats mt-2">
+                                            <span class="stats-item"><span class="status-dot susceptible-dot"></span> Susceptible: <span id="susceptible-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot infected-dot"></span> Infected: <span id="infected-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot recovered-dot"></span> Recovered: <span id="recovered-count">0</span></span>
+                                            <span class="stats-item">Day: <span id="simulation-day">0</span></span>
+                                        </div>
+                                    </div>
+                                    <canvas id="particle-simulation" width="600" height="300" style="border:1px solid #ddd; border-radius: 8px;"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- ARIMA Model -->
+                            <div id="arima-model" class="model-content">
+                                <div class="model-description">
+                                    <h4>ARIMA (AutoRegressive Integrated Moving Average) Model</h4>
+                                    <p>ARIMA is a classical time series forecasting model that combines autoregressive (AR), differencing (I), and moving average (MA) components. ARIMA is particularly useful for modeling diseases with cyclic patterns and trends.</p>
+                                    <p>Our simulation implements a simplified ARIMA process with customizable parameters for AR, MA components, and differencing.</p>
+                                </div>
+                                
+                                <div class="simulation-controls">
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Initial Cases</span>
+                                            <span class="control-value" id="arima-initial-value">100</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-initial" min="10" max="1000" step="10" value="100">
+                                        
+                                        <div class="control-label">
+                                            <span>AR Parameter (φ)</span>
+                                            <span class="control-value" id="arima-ar-value">0.7</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-ar" min="0" max="0.99" step="0.05" value="0.7">
+                                        
+                                        <div class="control-label">
+                                            <span>MA Parameter (θ)</span>
+                                            <span class="control-value" id="arima-ma-value">0.3</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-ma" min="0" max="0.99" step="0.05" value="0.3">
+                                    </div>
+                                    
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <span>Trend Coefficient</span>
+                                            <span class="control-value" id="arima-trend-value">0.05</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-trend" min="-0.2" max="0.2" step="0.01" value="0.05">
+                                        
+                                        <div class="control-label">
+                                            <span>Noise Level</span>
+                                            <span class="control-value" id="arima-noise-value">0.1</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-noise" min="0" max="0.5" step="0.05" value="0.1">
+                                        
+                                        <div class="control-label">
+                                            <span>Simulation Days</span>
+                                            <span class="control-value" id="arima-days-value">100</span>
+                                        </div>
+                                        <input type="range" class="range-slider" id="arima-days" min="30" max="365" step="5" value="100">
+                                        
+                                        <button class="btn-simulate mt-4" id="arima-simulate">Start Simulation</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <canvas id="arima-chart"></canvas>
+                                </div>
+                                
+                                <div class="particle-simulation-container">
+                                    <h4 class="mt-3 mb-2">Interactive Population Simulation</h4>
+                                    <div class="particle-controls mb-2">
+                                        <button class="btn-simulate btn-sm" id="particle-start">Start</button>
+                                        <button class="btn-simulate btn-sm" id="particle-pause" disabled>Pause</button>
+                                        <button class="btn-simulate btn-sm" id="particle-reset">Reset</button>
+                                        <div class="control-label mt-2">
+                                            <span>Simulation Speed</span>
+                                            <input type="range" class="range-slider" id="simulation-speed" min="1" max="10" value="5">
+                                        </div>
+                                        <div class="infection-stats mt-2">
+                                            <span class="stats-item"><span class="status-dot susceptible-dot"></span> Susceptible: <span id="susceptible-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot infected-dot"></span> Infected: <span id="infected-count">0</span></span>
+                                            <span class="stats-item"><span class="status-dot recovered-dot"></span> Recovered: <span id="recovered-count">0</span></span>
+                                            <span class="stats-item">Day: <span id="simulation-day">0</span></span>
+                                        </div>
+                                    </div>
+                                    <canvas id="particle-simulation" width="600" height="300" style="border:1px solid #ddd; border-radius: 8px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of simulation section -->
+
+    <!-- start of how it works section -->
+    <section class="section-padding bg-light-gray">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center mb-40">
+                    <h2 class="section-title">Understanding <strong>Epidemic Models</strong></h2>
+                    <p>Learn about the different mathematical approaches to modeling disease spread</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-4">
+                                <i class="fas fa-chart-line fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5">SIR Model</h3>
+                            <p>A compartmental model that divides the population into Susceptible, Infected, and Recovered groups.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-4">
+                                <i class="fas fa-brain fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5">LSTM Model</h3>
+                            <p>A deep learning approach that can capture complex patterns and long-term dependencies in time series data.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-4">
+                                <i class="fas fa-calendar-alt fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5">Prophet Model</h3>
+                            <p>A forecasting tool that excels at handling seasonality, holidays, and multiple trend changes.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-4">
+                                <i class="fas fa-calculator fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5">ARIMA Model</h3>
+                            <p>A statistical model that combines autoregression, differencing, and moving average components.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of how it works section -->
+
+<!--Features-->
+<section class="section-padding feature-showcase">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-9 mx-auto text-center mb-40">
+                <h2 class="section-title">Our <strong>Services</strong></h2>
+                <p>Explore our AI-powered healthcare solutions designed to assist with diagnosis and health management</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon-container mb-4">
+                        <img src="images/medbot.png" alt="AI Assistant" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">AI Health Assistant</h3>
+                    <p class="mb-4">Get instant answers to your health questions with our intelligent chatbot powered by advanced natural language processing.</p>
+                    <a href="bot.html" class="btn btn-outline-primary"style="color:white">Chat Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon-container mb-4">
+                        <img src="images/diagnostics.png" alt="Skin Disease" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">Disease Diagnosis</h3>
+                    <p class="mb-4">Upload images for AI-powered disease detection with our cutting-edge computer vision technology.</p>
+                    <a href="DiseaseDiagnosis.html" class="btn btn-outline-primary" style="color:white">Diagnose Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon-container mb-4">
+                        <img src="images/outbreak.png" alt="Endemic Map" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">Endemic Tracking</h3>
+                    <p class="mb-4">Monitor disease outbreaks and track their spread with real-time mapping and predictive modeling.</p>
+                    <a href="EndemicSimulation.html" class="btn btn-outline-primary"style="color:white">View Endemic Simulation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+       <!-- footer -->
+        <footer>
+            <div class="container" id="contact">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2>HealthDoc</h2>
+                        <p>Health Doc is a platform that connects patients with doctors. Patients can book appointments with doctors and get prescriptions online. Doctors can view the appointments and prescribe medicines to the patients.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contact Us</h2>
+                        <p>HealthDoc</p>
+                        <p>Chennai, India</p>
+                        <p>Phone: +91 8838862927</p>
+                        <p>Email: jayachandirank28@gmail.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contributors</h2>
+                        <p>Jayachandiran K</p>
+                        <p>Dinesh Kumar E</p>
+                        <p>Shamprakash R</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="credits">
+            <div class="container text-center">
+                <p>Designed by Jayachandiran K</p>
+            </div>
+        </div>
+
+
+    <!-- strat scroll to top -->
+    <a href="#top" class="btn btn-primary scroll-to-top-btn smooth-scroll position-fixed" style="border-radius: 10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="45" height="45"><path id="Layer" fill="currentColor" d="M7.2 19.2L15.2 11.2C15.68 10.71 16.43 10.68 16.96 11.08L17.08 11.2L25.08 19.2L23.2 21.08L16.14 14.02L9.08 21.08L7.2 19.2Z"></path></svg></a>
+    <!-- end scroll to top -->
+
+    <!-- Plugins Needed for the Project -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/slick.min.js"></script>
+    <script src="./js/shuffle.min.js"></script>
+    <script src="./js/aos.js"></script>
+
+    <!-- Main Script -->
+    <script src="scripts/script.js"></script>
+
+    <!-- Simulation Scripts -->
+    <script>
+        // Update range slider values
+        function updateRangeValue(slider, valueElement) {
+            document.getElementById(valueElement).textContent = document.getElementById(slider).value;
+        }
+
+        // Set up event listeners for all range inputs
+        document.querySelectorAll('.range-slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const valueId = this.id + '-value';
+                updateRangeValue(this.id, valueId);
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.model-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all content sections
+                document.querySelectorAll('.model-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show selected content
+                const modelName = this.getAttribute('data-model');
+                document.getElementById(`${modelName}-model`).classList.add('active');
+            });
+        });
+
+        // SIR Model Implementation
+        let sirChart;
+        document.getElementById('sir-simulate').addEventListener('click', function() {
+            const population = parseInt(document.getElementById('sir-population').value);
+            const initialInfected = parseInt(document.getElementById('sir-infected').value);
+            const beta = parseFloat(document.getElementById('sir-beta').value);
+            const gamma = parseFloat(document.getElementById('sir-gamma').value);
+            const days = parseInt(document.getElementById('sir-days').value);
+            
+            // Initial values
+            let susceptible = population - initialInfected;
+            let infected = initialInfected;
+            let recovered = 0;
+            
+            const susceptibleData = [susceptible];
+            const infectedData = [infected];
+            const recoveredData = [recovered];
+            const labels = [0];
+            
+            // Prepare all data points first
+            const allSusceptibleData = [susceptible];
+            const allInfectedData = [infected];
+            const allRecoveredData = [recovered];
+            const allLabels = [0];
+            
+            // Calculate all data points for the entire simulation
+            for (let day = 1; day <= days; day++) {
+                // Calculate new values using SIR differential equations
+                const newInfected = beta * susceptible * infected / population;
+                const newRecovered = gamma * infected;
+                
+                susceptible -= newInfected;
+                infected = infected + newInfected - newRecovered;
+                recovered += newRecovered;
+                
+                // Ensure values stay within bounds
+                susceptible = Math.max(0, susceptible);
+                infected = Math.max(0, infected);
+                
+                // Add data to full arrays
+                allSusceptibleData.push(Math.round(susceptible));
+                allInfectedData.push(Math.round(infected));
+                allRecoveredData.push(Math.round(recovered));
+                allLabels.push(day);
+            }
+            
+            // Create initial chart with just the starting point
+            if (sirChart) {
+                sirChart.destroy();
+            }
+            
+            const ctx = document.getElementById('sir-chart').getContext('2d');
+            sirChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Susceptible',
+                            data: susceptibleData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Infected',
+                            data: infectedData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Recovered',
+                            data: recoveredData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Population'
+                            },
+                            min: 0,
+                            max: population
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'SIR Model Simulation (Day 0 of ' + days + ')'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    animation: {
+                        duration: 0 // disable initial animation
+                    }
+                }
+            });
+            
+            // Animation function to add points one by one
+            let currentDay = 0;
+            const animationSpeed = Math.max(5, Math.min(50, Math.round(days / 100))); // Adjust speed based on total days
+            
+            // Add animation progress indicator
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'text-center mt-2';
+            progressContainer.innerHTML = `
+                <div class="progress" style="height: 10px;">
+                    <div id="sir-progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div class="mt-1">
+                    <button id="sir-pause-animation" class="btn-simulate btn-sm">Pause</button>
+                    <button id="sir-resume-animation" class="btn-simulate btn-sm" style="display:none">Resume</button>
+                    <button id="sir-skip-animation" class="btn-simulate btn-sm">Skip Animation</button>
+                </div>
+            `;
+            
+            // Find the chart container and append the progress elements after it
+            const chartContainer = document.querySelector('#sir-chart').parentElement;
+            // Remove any existing progress container
+            const existingProgress = chartContainer.nextElementSibling;
+            if (existingProgress && existingProgress.classList.contains('text-center')) {
+                existingProgress.remove();
+            }
+            chartContainer.insertAdjacentElement('afterend', progressContainer);
+            
+            const progressBar = document.getElementById('sir-progress-bar');
+            let animationPaused = false;
+            
+            document.getElementById('sir-pause-animation').addEventListener('click', function() {
+                animationPaused = true;
+                this.style.display = 'none';
+                document.getElementById('sir-resume-animation').style.display = 'inline-block';
+            });
+            
+            document.getElementById('sir-resume-animation').addEventListener('click', function() {
+                animationPaused = false;
+                this.style.display = 'none';
+                document.getElementById('sir-pause-animation').style.display = 'inline-block';
+                animateNextStep();
+            });
+            
+            document.getElementById('sir-skip-animation').addEventListener('click', function() {
+                // Stop current animation
+                animationPaused = true;
+                
+                // Update chart with all data points
+                sirChart.data.labels = allLabels;
+                sirChart.data.datasets[0].data = allSusceptibleData;
+                sirChart.data.datasets[1].data = allInfectedData;
+                sirChart.data.datasets[2].data = allRecoveredData;
+                sirChart.options.plugins.title.text = 'SIR Model Simulation (Complete)';
+                sirChart.update();
+                
+                // Update progress bar to 100%
+                progressBar.style.width = '100%';
+                
+                // Hide controls
+                document.getElementById('sir-pause-animation').style.display = 'none';
+                document.getElementById('sir-resume-animation').style.display = 'none';
+                this.style.display = 'none';
+            });
+            
+            function animateNextStep() {
+                if (animationPaused) return;
+                
+                if (currentDay < days) {
+                    currentDay++;
+                    
+                    // Add next data point
+                    susceptibleData.push(allSusceptibleData[currentDay]);
+                    infectedData.push(allInfectedData[currentDay]);
+                    recoveredData.push(allRecoveredData[currentDay]);
+                    labels.push(allLabels[currentDay]);
+                    
+                    // Update chart
+                    sirChart.data.labels = labels;
+                    sirChart.data.datasets[0].data = susceptibleData;
+                    sirChart.data.datasets[1].data = infectedData;
+                    sirChart.data.datasets[2].data = recoveredData;
+                    sirChart.options.plugins.title.text = 'SIR Model Simulation (Day ' + currentDay + ' of ' + days + ')';
+                    sirChart.update();
+                    
+                    // Update progress bar
+                    const progress = (currentDay / days) * 100;
+                    progressBar.style.width = progress + '%';
+                    
+                    // Schedule next update
+                    setTimeout(animateNextStep, 1000 / animationSpeed);
+                } else {
+                    // Animation complete
+                    document.getElementById('sir-pause-animation').style.display = 'none';
+                    document.getElementById('sir-resume-animation').style.display = 'none';
+                    document.getElementById('sir-skip-animation').style.display = 'none';
+                }
+            }
+            
+            // Start animation
+            setTimeout(animateNextStep, 500);
+        });
+
+        // LSTM Model Implementation
+        let lstmChart;
+        document.getElementById('lstm-simulate').addEventListener('click', function() {
+            const population = parseInt(document.getElementById('lstm-population').value);
+            const initialCases = parseInt(document.getElementById('lstm-initial').value);
+            const growthRate = parseFloat(document.getElementById('lstm-growth').value);
+            const memoryLength = parseInt(document.getElementById('lstm-memory').value);
+            const seasonalityFactor = parseFloat(document.getElementById('lstm-seasonality').value);
+            const days = parseInt(document.getElementById('lstm-days').value);
+            
+            // Memory of past values to simulate LSTM behavior
+            const memory = Array(memoryLength).fill(initialCases);
+            
+            // Track infected, recovered, and susceptible
+            let infected = initialCases;
+            let recovered = 0;
+            let susceptible = population - infected;
+            
+            const infectedData = [infected];
+            const recoveredData = [recovered];
+            const susceptibleData = [susceptible];
+            const labels = [0];
+            
+            // Run simplified LSTM-inspired model
+            for (let day = 1; day <= days; day++) {
+                // Calculate memory effect (weighted average of past values)
+                let memoryEffect = 0;
+                let totalWeight = 0;
+                
+                for (let i = 0; i < memory.length; i++) {
+                    const weight = (memory.length - i) / memory.length; // More recent values have higher weight
+                    memoryEffect += memory[i] * weight;
+                    totalWeight += weight;
+                }
+                
+                memoryEffect /= totalWeight;
+                
+                // Add seasonality
+                const seasonalEffect = Math.sin(2 * Math.PI * day / 30) * seasonalityFactor * infected;
+                
+                // Calculate new infections based on growth rate, memory effect, and seasonality
+                let newInfected = (growthRate * Math.sqrt(infected) + 0.1 * memoryEffect + seasonalEffect) * 
+                                  Math.min(1, susceptible / population);
+                
+                // Calculate recoveries
+                const recoveryRate = 0.1; // Fixed recovery rate
+                const newRecovered = recoveryRate * infected;
+                
+                // Update values
+                infected = infected + newInfected - newRecovered;
+                recovered += newRecovered;
+                susceptible = population - infected - recovered;
+                
+                // Ensure values stay within bounds
+                infected = Math.max(0, Math.min(infected, susceptible + infected));
+                susceptible = Math.max(0, Math.min(susceptible, population - infected - recovered));
+                recovered = Math.max(0, Math.min(recovered, population - infected - susceptible));
+                
+                // Update memory (add new value, remove oldest)
+                memory.push(infected);
+                memory.shift();
+                
+                // Add data to arrays
+                infectedData.push(Math.round(infected));
+                recoveredData.push(Math.round(recovered));
+                susceptibleData.push(Math.round(susceptible));
+                labels.push(day);
+            }
+            
+            // Create or update chart
+            if (lstmChart) {
+                lstmChart.destroy();
+            }
+            
+            const ctx = document.getElementById('lstm-chart').getContext('2d');
+            lstmChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Susceptible',
+                            data: susceptibleData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Infected',
+                            data: infectedData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Recovered',
+                            data: recoveredData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Population'
+                            },
+                            min: 0,
+                            max: population
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'LSTM-Inspired Model Simulation'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        });
+
+        // Prophet Model Implementation
+        let prophetChart;
+        document.getElementById('prophet-simulate').addEventListener('click', function() {
+            const population = parseInt(document.getElementById('prophet-population').value);
+            const trendGrowth = parseFloat(document.getElementById('prophet-trend').value);
+            const seasonalAmplitude = parseFloat(document.getElementById('prophet-seasonal').value);
+            const holidayImpact = parseFloat(document.getElementById('prophet-holiday').value);
+            const noiseLevel = parseFloat(document.getElementById('prophet-noise').value);
+            const days = parseInt(document.getElementById('prophet-days').value);
+            
+            const infectedData = [];
+            const recoveredData = [];
+            const susceptibleData = [];
+            const labels = [];
+            
+            // Base trend starts with 1% of population infected
+            let baseTrend = population * 0.01;
+            let recovered = 0;
+            
+            // Define holidays (simplified as specific days)
+            const holidays = [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360];
+            
+            for (let day = 0; day <= days; day++) {
+                // Calculate trend component with logistic growth
+                const trend = baseTrend * (1 + trendGrowth);
+                baseTrend = trend;
+                
+                // Calculate seasonal component (multiple seasonal patterns)
+                const weeklySeasonal = Math.sin(2 * Math.PI * day / 7) * seasonalAmplitude * trend * 0.3;
+                const monthlySeasonal = Math.sin(2 * Math.PI * day / 30) * seasonalAmplitude * trend * 0.5;
+                const yearlySeasonal = Math.cos(2 * Math.PI * day / 365) * seasonalAmplitude * trend;
+                
+                const seasonalComponent = weeklySeasonal + monthlySeasonal + yearlySeasonal;
+                
+                // Calculate holiday component
+                let holidayComponent = 0;
+                if (holidays.includes(day)) {
+                    holidayComponent = trend * holidayImpact;
+                }
+                
+                // Add random noise
+                const noise = (Math.random() * 2 - 1) * noiseLevel * trend;
+                
+                // Calculate infected
+                let infected = trend + seasonalComponent + holidayComponent + noise;
+                infected = Math.max(0, infected);
+                
+                // Calculate recovery (assume 10% recovery rate)
+                const newRecovered = infected * 0.1;
+                recovered += newRecovered;
+                infected -= newRecovered;
+                
+                // Ensure total doesn't exceed population
+                infected = Math.min(infected, population - recovered);
+                
+                // Calculate susceptible
+                const susceptible = population - infected - recovered;
+                
+                // Add data to arrays
+                infectedData.push(Math.round(infected));
+                recoveredData.push(Math.round(recovered));
+                susceptibleData.push(Math.round(susceptible));
+                labels.push(day);
+            }
+            
+            // Create or update chart
+            if (prophetChart) {
+                prophetChart.destroy();
+            }
+            
+            const ctx = document.getElementById('prophet-chart').getContext('2d');
+            prophetChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Susceptible',
+                            data: susceptibleData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Infected',
+                            data: infectedData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Recovered',
+                            data: recoveredData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Population'
+                            },
+                            min: 0,
+                            max: population
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Prophet-Inspired Model Simulation'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        });
+
+        // ARIMA Model Implementation
+        let arimaChart;
+        document.getElementById('arima-simulate').addEventListener('click', function() {
+            const initialCases = parseInt(document.getElementById('arima-initial').value);
+            const arParameter = parseFloat(document.getElementById('arima-ar').value);
+            const maParameter = parseFloat(document.getElementById('arima-ma').value);
+            const trendCoef = parseFloat(document.getElementById('arima-trend').value);
+            const noiseLevel = parseFloat(document.getElementById('arima-noise').value);
+            const days = parseInt(document.getElementById('arima-days').value);
+            
+            // Initialize arrays
+            const infectedData = [initialCases];
+            const recoveredData = [0];
+            const labels = [0];
+            
+            // ARIMA simulation
+            let errors = [0, 0]; // Previous errors for MA component
+            
+            for (let day = 1; day <= days; day++) {
+                // AR component: based on previous value
+                const arComponent = arParameter * infectedData[day - 1];
+                
+                // MA component: based on previous errors
+                const maComponent = maParameter * (errors[0] + errors[1]) / 2;
+                
+                // Trend component
+                const trendComponent = trendCoef * day;
+                
+                // Random noise
+                const noise = (Math.random() * 2 - 1) * noiseLevel * initialCases;
+                
+                // Calculate new value
+                let newInfected = arComponent + maComponent + trendComponent + noise;
+                newInfected = Math.max(5, newInfected); // Ensure minimum value
+                
+                // Calculate recovery (assume 5% recovery rate)
+                const recoveryRate = 0.05;
+                const newRecovered = infectedData[day - 1] * recoveryRate;
+                
+                // Update recovered total
+                const totalRecovered = recoveredData[day - 1] + newRecovered;
+                
+                // Add data to arrays
+                infectedData.push(Math.round(newInfected));
+                recoveredData.push(Math.round(totalRecovered));
+                labels.push(day);
+                
+                // Calculate error for MA component
+                const expectedValue = arComponent + maComponent + trendComponent;
+                const error = newInfected - expectedValue;
+                errors.shift();
+                errors.push(error);
+            }
+            
+            // Calculate susceptible (simplified as total - infected - recovered)
+            const totalPopulation = Math.max(...infectedData) * 3; // Estimate total population
+            const susceptibleData = labels.map((_, i) => Math.max(0, totalPopulation - infectedData[i] - recoveredData[i]));
+            
+            // Create or update chart
+            if (arimaChart) {
+                arimaChart.destroy();
+            }
+            
+            const ctx = document.getElementById('arima-chart').getContext('2d');
+            arimaChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Susceptible',
+                            data: susceptibleData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Infected',
+                            data: infectedData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Recovered',
+                            data: recoveredData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Population'
+                            },
+                            min: 0
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'ARIMA-Inspired Model Simulation'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        });
+
+        // Particle Simulation Implementation
+        class Particle {
+            constructor(x, y, radius, status = 'susceptible') {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.status = status; // 'susceptible', 'infected', 'recovered'
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.infectionDay = -1;
+                this.recoveryPeriod = Math.floor(Math.random() * 5) + 10; // 10-14 days to recover
+            }
+
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                
+                if (this.status === 'susceptible') {
+                    ctx.fillStyle = 'rgba(54, 162, 235, 0.8)';
+                } else if (this.status === 'infected') {
+                    ctx.fillStyle = 'rgba(255, 99, 132, 0.8)';
+                } else if (this.status === 'recovered') {
+                    ctx.fillStyle = 'rgba(75, 192, 192, 0.8)';
+                }
+                
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            update(width, height, day) {
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bounce off walls
+                if (this.x - this.radius < 0 || this.x + this.radius > width) {
+                    this.vx = -this.vx;
+                }
+                
+                if (this.y - this.radius < 0 || this.y + this.radius > height) {
+                    this.vy = -this.vy;
+                }
+                
+                // Keep within bounds
+                this.x = Math.max(this.radius, Math.min(width - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(height - this.radius, this.y));
+                
+                // Check for recovery
+                if (this.status === 'infected' && day - this.infectionDay >= this.recoveryPeriod) {
+                    this.status = 'recovered';
+                }
+            }
+
+            collideWith(other, transmissionRate, day) {
+                // Calculate distance between particles
+                const dx = this.x - other.x;
+                const dy = this.y - other.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Check for collision
+                if (distance < this.radius + other.radius) {
+                    // Simple elastic collision
+                    const angle = Math.atan2(dy, dx);
+                    const sin = Math.sin(angle);
+                    const cos = Math.cos(angle);
+                    
+                    // Rotate velocities
+                    const vx1 = this.vx * cos + this.vy * sin;
+                    const vy1 = this.vy * cos - this.vx * sin;
+                    const vx2 = other.vx * cos + other.vy * sin;
+                    const vy2 = other.vy * cos - other.vx * sin;
+                    
+                    // Final velocities
+                    const finalVx1 = vx2;
+                    const finalVx2 = vx1;
+                    const finalVy1 = vy1;
+                    const finalVy2 = vy2;
+                    
+                    // Rotate back
+                    this.vx = finalVx1 * cos - finalVy1 * sin;
+                    this.vy = finalVy1 * cos + finalVx1 * sin;
+                    other.vx = finalVx2 * cos - finalVy2 * sin;
+                    other.vy = finalVy2 * cos + finalVx2 * sin;
+                    
+                    // Disease transmission
+                    if ((this.status === 'infected' && other.status === 'susceptible') ||
+                        (this.status === 'susceptible' && other.status === 'infected')) {
+                        
+                        // Transmission probability
+                        if (Math.random() < transmissionRate) {
+                            if (this.status === 'susceptible') {
+                                this.status = 'infected';
+                                this.infectionDay = day;
+                            } else {
+                                other.status = 'infected';
+                                other.infectionDay = day;
+                            }
+                        }
+                    }
+                    
+                    // Move particles apart to prevent sticking
+                    const overlap = this.radius + other.radius - distance;
+                    const moveX = overlap * cos / 2;
+                    const moveY = overlap * sin / 2;
+                    
+                    this.x += moveX;
+                    this.y += moveY;
+                    other.x -= moveX;
+                    other.y -= moveY;
+                }
+            }
+        }
+
+        // Initialize simulation variables
+        let particles = [];
+        let simulationAnimationId = null;
+        let isPaused = true;
+        let simulationDay = 0;
+        let lastDayUpdateTime = 0;
+        let dayLength = 1000; // 1 second = 1 day by default
+        let simulationCanvas = document.getElementById('particle-simulation');
+        let simulationCtx = simulationCanvas.getContext('2d');
+
+        // Initialize simulation
+        function initializeSimulation() {
+            particles = [];
+            simulationDay = 0;
+            lastDayUpdateTime = 0;
+            updateSimulationStats();
+            
+            // Create particles
+            const particleCount = 50;
+            const radius = 6;
+            const width = simulationCanvas.width;
+            const height = simulationCanvas.height;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const x = Math.random() * (width - radius * 2) + radius;
+                const y = Math.random() * (height - radius * 2) + radius;
+                const status = i === 0 ? 'infected' : 'susceptible'; // Start with one infected
+                
+                const particle = new Particle(x, y, radius, status);
+                
+                if (status === 'infected') {
+                    particle.infectionDay = 0;
+                }
+                
+                particles.push(particle);
+            }
+        }
+
+        // Update simulation stats
+        function updateSimulationStats() {
+            const susceptibleCount = particles.filter(p => p.status === 'susceptible').length;
+            const infectedCount = particles.filter(p => p.status === 'infected').length;
+            const recoveredCount = particles.filter(p => p.status === 'recovered').length;
+            
+            document.getElementById('susceptible-count').textContent = susceptibleCount;
+            document.getElementById('infected-count').textContent = infectedCount;
+            document.getElementById('recovered-count').textContent = recoveredCount;
+            document.getElementById('simulation-day').textContent = simulationDay;
+        }
+
+        // Animation loop
+        function animateSimulation(timestamp) {
+            if (!isPaused) {
+                simulationCtx.clearRect(0, 0, simulationCanvas.width, simulationCanvas.height);
+                
+                // Update day counter
+                if (!lastDayUpdateTime) lastDayUpdateTime = timestamp;
+                const daySpeed = 11 - parseInt(document.getElementById('simulation-speed').value);
+                dayLength = daySpeed * 200; // 200ms to 2000ms per day based on speed
+                
+                if (timestamp - lastDayUpdateTime > dayLength) {
+                    simulationDay++;
+                    lastDayUpdateTime = timestamp;
+                    updateSimulationStats();
+                }
+                
+                // Update particles
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update(simulationCanvas.width, simulationCanvas.height, simulationDay);
+                    
+                    // Check for collisions with other particles
+                    for (let j = i + 1; j < particles.length; j++) {
+                        particles[i].collideWith(particles[j], 0.5, simulationDay);
+                    }
+                    
+                    particles[i].draw(simulationCtx);
+                }
+                
+                // Stop simulation if no infected remain
+                if (particles.filter(p => p.status === 'infected').length === 0 && 
+                    particles.filter(p => p.status === 'susceptible').length > 0) {
+                    const progressMsg = document.createElement('div');
+                    progressMsg.className = 'alert alert-info mt-2';
+                    progressMsg.textContent = 'Outbreak contained! No more infected individuals.';
+                    document.querySelector('.particle-simulation-container').appendChild(progressMsg);
+                    
+                    // Auto-remove the message after 5 seconds
+                    setTimeout(() => {
+                        progressMsg.remove();
+                    }, 5000);
+                    
+                    pauseSimulation();
+                }
+                
+                simulationAnimationId = requestAnimationFrame(animateSimulation);
+            }
+        }
+
+        // Controls
+        function startSimulation() {
+            if (isPaused) {
+                isPaused = false;
+                document.getElementById('particle-start').disabled = true;
+                document.getElementById('particle-pause').disabled = false;
+                simulationAnimationId = requestAnimationFrame(animateSimulation);
+            }
+        }
+
+        function pauseSimulation() {
+            if (!isPaused) {
+                isPaused = true;
+                document.getElementById('particle-start').disabled = false;
+                document.getElementById('particle-pause').disabled = true;
+                if (simulationAnimationId) {
+                    cancelAnimationFrame(simulationAnimationId);
+                }
+            }
+        }
+
+        function resetSimulation() {
+            pauseSimulation();
+            initializeSimulation();
+            drawSimulation();
+        }
+
+        function drawSimulation() {
+            simulationCtx.clearRect(0, 0, simulationCanvas.width, simulationCanvas.height);
+            particles.forEach(particle => particle.draw(simulationCtx));
+        }
+
+        // Set up event listeners
+        document.getElementById('particle-start').addEventListener('click', startSimulation);
+        document.getElementById('particle-pause').addEventListener('click', pauseSimulation);
+        document.getElementById('particle-reset').addEventListener('click', resetSimulation);
+        document.getElementById('simulation-speed').addEventListener('input', function() {
+            // Adjusted in the animation loop
+        });
+
+        // Initialize the simulation when the page loads
+        window.addEventListener('load', function() {
+            simulationCanvas = document.getElementById('particle-simulation');
+            simulationCtx = simulationCanvas.getContext('2d');
+            
+            // Make sure canvas is responsive
+            function resizeCanvas() {
+                const container = simulationCanvas.parentElement;
+                const containerWidth = container.clientWidth;
+                simulationCanvas.width = Math.min(600, containerWidth - 30);
+                simulationCanvas.height = simulationCanvas.width / 2;
+                
+                if (!isPaused) {
+                    drawSimulation();
+                }
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            // Initialize simulation
+            initializeSimulation();
+            drawSimulation();
+        });
+    </script>
+</body>
+</html>

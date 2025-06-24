@@ -1,0 +1,274 @@
+body
+{
+    background-color: black;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar
+{
+    background-color: rgb(0 0 0/40%);
+
+}
+
+.nav-item .nav-link
+{
+    color:aliceblue;
+    margin-left: 10px;
+}
+
+.nav-item .nav-link:hover
+{
+    color:aqua;
+}
+
+.navbar-collapse{
+    justify-content: flex-end;
+}
+
+.project .container
+{
+    margin-top: 10px;
+    margin-bottom: 50px;
+    color:aqua;
+}
+
+.project .container .row
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:beige;
+}
+
+.main-content .container
+{
+    margin:0px 0px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-content .container .row
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right:15%;
+    margin-left:10px;
+    margin-top:-200px;
+    padding-right: 75px;
+}
+
+.main-content .container .row .desc
+{
+    color:white;
+    text-align: center;
+    margin-top:0px;
+}
+.main-text h1
+{
+    position:relative;
+    color: transparent;
+    -webkit-text-stroke:0.1vw aliceblue;
+    text-transform: uppercase;
+    font-size: 9vw;
+}
+
+.main-text h1::before{
+    content: attr(data-text);
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:100%;
+    color:cyan;
+    -webkit-text-stroke:0.3vw cyan;
+    border-right:2px solid white;
+    overflow: hidden;
+    animation: animate 6s linear infinite;
+
+}
+
+
+
+@keyframes animate{
+    0%,10%,100%
+    {
+        width: 0;
+    }
+    70%,90%
+    {
+        width: 100%;
+    }
+}
+
+.features .container
+{
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color:aqua;
+}
+
+.features .container .row
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:beige;
+}
+.features .container .row h2
+{
+    color:darkgrey;
+}
+.features .container img
+{
+
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+
+    align-items: center;
+    justify-items: center;
+}
+
+
+.about-us .container
+{
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color:aqua;
+}
+
+.about-us .container .row
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:burlywood;
+}
+
+.back-video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+@media(min-aspect-ratio :16/9){
+    .back-video{
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media(max-aspect-ratio :16/9){
+    .back-video{
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.chat-icon
+{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: aqua;
+    color: aliceblue;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    z-index : 10;
+    transition: background-color 0.5s;
+}
+
+.chat-icon:hover
+{
+    background-color:aquamarine;
+}
+
+.chat-icon i
+{
+    font-size: 24px;
+}
+
+.chat-icon img
+{
+    width:65px;
+    height:65px;
+}
+
+.quote-container
+{
+    text-align: center;
+    color:darkseagreen;
+}
+
+.quote-container .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quote-container .container .quote-symbol {
+    margin: 0 10px;
+}
+
+#quote-container {
+    flex: 1;
+    text-align: center;
+
+}
+
+
+footer
+{
+    background-color: rgba(47, 39, 39, 0.4);
+    color:aliceblue;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer .container .row p
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:aliceblue !important;
+}
+
+footer p
+{
+    margin: 0;
+}
+
+footer a
+{
+    color: aliceblue;
+}
+
+footer a:hover
+{
+    color: aqua;
+}
+
+footer .social-media
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}

@@ -1,0 +1,660 @@
+<!DOCTYPE html><html lang="zxx"><head>
+    <meta charset="utf-8">
+    <title>Health Doc</title>
+
+    <!-- mobile responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- ** Plugins Needed for the Project ** -->    
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/themify-icons.css">
+    <link rel="stylesheet" href="styles/slick.css">
+    <link rel="stylesheet" href="styles/slick-theme.css">
+    <link rel="stylesheet" href="styles/aos.css">
+    <link rel="stylesheet" href="styles/w3.css">
+    <link rel="stylesheet" href="styles/skin.css">
+    <!-- Main Stylesheet -->
+    <link href="styles/style.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.4.2/css/all.css' integrity='sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns' crossorigin='anonymous'>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-spy" class="position-relative">
+    <script>
+        // Function to toggle between light and dark modes
+        function toggleDarkMode() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                document.body.setAttribute('light-mode', 'dark');
+            } else {
+                document.body.removeAttribute('light-mode');
+            }
+        }
+
+        // Initial theme detection and toggling
+        toggleDarkMode();
+
+        // Listen for changes in system theme preference
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            toggleDarkMode();
+        });
+    </script>
+    <!-- start of preloader -->
+    <div class="preloader position-fixed d-flex align-items-center justify-content-center">
+        <div class="block">
+            <div class="loader-image mb-20">
+                <img src="images/logo2.png">
+            </div>
+            <div class="loader-text text-uppercase">
+                <span class="mb-1">HEALTHDOC</span>
+                <span>Disease Diagnosis</span>
+            </div>
+        </div>
+    </div>    
+    <!-- end of preloader -->
+
+<!-- start of header -->
+<header class="header-nav position-relative bg-light-gray">
+    <div class="container">
+        <nav class="navbar navbar-expand-xl navbar-light px-0">
+            <a class="navbar-brand p-0" href="index.html"><img class="img-fluid" src="images/logo.png" alt="logo" height="90" width="250"></a>
+            <!-- <a class="navbar-brand p-0" href="index.html"><img class="img-fluid" src="images/sih23.png" alt="logo" height="140" width="350" style="margin-left: 20px;"></a> -->
+
+            <!-- logo -->
+
+            <button class="navbar-toggler bg-white p-0" type="button" data-toggle="collapse" data-target="#navlinks" aria-controls="navlinks" aria-expanded="false" aria-label="Toggle navigation" style="border-radius: 12px; width: 40px; height: 40px;">
+                <svg class="nav-toggle-icon" viewBox="0 0 100 100" width="40" onclick="this.classList.toggle('active')">
+                    <path class="line top" d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"></path>
+                    <path class="line middle" d="m 70,50 h -40"></path>
+                    <path class="line bottom" d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"></path>
+                </svg>
+            </button>
+                        
+            <!-- mobile-nav control button -->
+            
+            <div class="collapse navbar-collapse" id="navlinks">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="DiseaseDiagnosis.html">Disease diagnosis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="EndemicSimulation.html">Endemic Simulation</a>
+                    </li>
+                    <li class="nav-item active">
+                            <a class="nav-link" href="bot.html">HealthBot</a>
+                    </li>
+                </ul>
+                <div class="navbar-button">
+                    <button class="btn-sm light-mode-button" aria-label="Toggle Light Mode" onclick="toggle_light_mode()">
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>                
+            </div>
+            <!-- nav links -->
+        </nav>
+    </div>
+</header>
+<!-- end of header -->
+
+
+<!-- start of growth-rate -->
+<section class="section-padding pb-50">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-9 mx-auto text-center mb-40">
+                <h2 class="section-title">Skin Disease <strong>Classifier</strong></h2>
+            </div>
+            <div class="col-xl-10 w3-content">
+                <div class="w3-center w3-padding-bottom">
+                    <img id="selected-image" class="adjust-image" src="./images/nope.png" alt="Image for analysis" style="border-radius: 17px; max-width: 65%;">
+                </div>                
+                <div id="btnn" class="w3-center" style="padding-top: 10px;">
+                    <input type="file" name="image" id="image" accept=".jpg, .png" style="display: none;">
+                    <button class="btn btn-primary has-icon" onclick="setTimeout(simulateClick.bind(null, 'image-selector'), 200)" style="margin-bottom: 12px;">
+                        <i class='fas fa-camera w3-padding-right' style='font-size:15px'></i>
+                        <b>Upload Image</b>
+                        <span class="icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5522 6.66669L20.5522 14.6667C21.0329 15.1473 21.0699 15.9036 20.6632 16.4267L20.5522 16.5523L12.5522 24.5523L10.6666 22.6667L17.7228 15.6095L10.6666 8.55231L12.5522 6.66669Z" fill="currentColor"></path></svg></span>
+                    </button>
+                    <p>Please wait for <b>5 seconds</b> before uploading image</p>
+                    <p class="w3-text-teal"><b>Accepted image format ↪ jpeg or png</b></p>
+                    <p>Results are <b>not</b> a substitute for professional medical advice.</p>
+                </div>
+                <div class="w3-center add-margin side-margin text-color space-letters dont-break-out" style="border-radius: 12px; background: #cecece; margin-bottom: 1px; border: 2px solid #ff3157;">
+                    <h5 style="margin-bottom: 2px;"><span class="fa fa-angle-double-down" style="padding-right: 5px;padding-top: 10px;"></span><b style="color: #ff3157;">Predicted Disease</b><span class="fa fa-angle-double-down" style="padding-left: 5px;"></span></h5>
+                    <ol class='w3-left-align text-color' id='prediction-list' style="font-weight: bold;"></ol>
+                </div>                               
+            </div>
+        </div>
+    </div>
+</section>
+
+    <div class="shape-1 shape-xs bg-secondary rounded-circle"></div>
+    <div class="shape-2 shape-sm bg-primary rounded-circle d-none d-md-block"></div>
+    <div class="shape-3 shape-xs-2 bg-primary rounded-circle"></div>
+    <div class="shape-4 shape-xs bg-tertiary rounded-circle"></div>
+    <div class="shape-5 shape-xs bg-tertiary rounded-circle"></div>
+    <div class="shape-6 shape-md bg-secondary rounded-circle d-none d-md-block"></div>
+</section>
+
+
+<!-- features -->
+<section class="section-padding feature-showcase">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-9 mx-auto text-center mb-40">
+                <h2 class="section-title">Our <strong>Services</strong></h2>
+                <p>Explore our AI-powered healthcare solutions designed to assist with diagnosis and health management</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon-container mb-4">
+                        <img src="images/medbot.png" alt="AI Assistant" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">AI Health Assistant</h3>
+                    <p class="mb-4">Get instant answers to your health questions with our intelligent chatbot powered by advanced natural language processing.</p>
+                    <a href="bot.html" class="btn btn-outline-primary"style="color:white">Chat Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon-container mb-4">
+                        <img src="images/diagnostics.png" alt="Skin Disease" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">Disease Diagnosis</h3>
+                    <p class="mb-4">Upload images for AI-powered disease detection with our cutting-edge computer vision technology.</p>
+                    <a href="DiseaseDiagnosis.html" class="btn btn-outline-primary" style="color:white">Diagnose Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4 h-100" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon-container mb-4">
+                        <img src="images/outbreak.png" alt="Endemic Map" class="feature-icon">
+                    </div>
+                    <h3 class="mb-3">Endemic Tracking</h3>
+                    <p class="mb-4">Monitor disease outbreaks and track their spread with real-time mapping and predictive modeling.</p>
+                    <a href="EndemicSimulation.html" class="btn btn-outline-primary"style="color:white">View Endemic Simulation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- strat scroll to top -->
+<a href="#top" class="btn btn-primary scroll-to-top-btn smooth-scroll position-fixed" style="border-radius: 10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="45" height="45"><path id="Layer" fill="currentColor" d="M7.2 19.2L15.2 11.2C15.68 10.71 16.43 10.68 16.96 11.08L17.08 11.2L25.08 19.2L23.2 21.08L16.14 14.02L9.08 21.08L7.2 19.2Z"></path></svg></a>
+<!-- end scroll to top -->
+<div class="hide">
+    <button id='predict-button'>Predict</button>
+</div>
+<div class="hide">
+    <input id="image-selector" type="file" multiple>
+</div>
+<!-- Plugins Needed for the Project -->
+<script src="./js/jquery.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script src="./js/slick.min.js"></script>
+<script src="./js/shuffle.min.js"></script>
+<script src="./js/aos.js"></script>
+
+<script src="./scripts/simplified_prediction.js"></script>
+
+<!-- Main Script -->
+<script src="./scripts/script.js"></script>
+
+<!-- Chatbot UI -->
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="chat-title">Health Assistant</div>
+        <button id="chat-toggle" class="chat-toggle-btn">
+            <i class="fa fa-comments"></i>
+        </button>
+    </div>
+    <div class="chat-body">
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <div class="message-content">Hello! I'm your healthcare assistant. How can I help you today?</div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message...">
+            <button id="chat-send" class="chat-send-btn">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+       <!-- footer -->
+        <footer>
+            <div class="container" id="contact">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2>HealthDoc</h2>
+                        <p>Health Doc is a platform that connects patients with doctors. Patients can book appointments with doctors and get prescriptions online. Doctors can view the appointments and prescribe medicines to the patients.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contact Us</h2>
+                        <p>HealthDoc</p>
+                        <p>Chennai, India</p>
+                        <p>Phone: +91 8838862927</p>
+                        <p>Email: jayachandirank28@gmail.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Contributors</h2>
+                        <p>Jayachandiran K</p>
+                        <p>Dinesh Kumar E</p>
+                        <p>Shamprakash R</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="credits">
+            <div class="container text-center">
+                <p>Designed by Jayachandiran K</p>
+            </div>
+        </div>
+
+<style>
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    transform: translateY(calc(100% - 60px));
+    z-index: 1000;
+}
+
+.chat-container.open {
+    transform: translateY(0);
+}
+
+.chat-header {
+    background: linear-gradient(to right, #ff3157, #ff6d7e);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.chat-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.chat-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #f7f8fb;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    max-width: 80%;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 18px;
+    word-wrap: break-word;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: #ff3157;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.bot-message {
+    align-self: flex-start;
+    background-color: #e5e5ea;
+    color: #333;
+    border-bottom-left-radius: 5px;
+}
+
+.message-content {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 10px 0 0 0;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+}
+
+.chat-send-btn {
+    background-color: #ff3157;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #e5e5ea;
+    border-radius: 18px;
+    border-bottom-left-radius: 5px;
+    max-width: 100px;
+    margin-bottom: 15px;
+    align-self: flex-start;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #777;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: typing-animation 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+}
+
+/* Add dark mode support */
+[light-mode="dark"] .chat-container {
+    background-color: #333;
+}
+
+[light-mode="dark"] .chat-body {
+    background-color: #222;
+}
+
+[light-mode="dark"] .chat-input {
+    background-color: #444;
+    color: #fff;
+    border-color: #555;
+}
+
+[light-mode="dark"] .bot-message {
+    background-color: #444;
+    color: #fff;
+}
+
+[light-mode="dark"] .message-content {
+    color: inherit;
+}
+
+.feature-showcase {
+    background-color: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #ff3157;
+}
+
+.icon-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    background: linear-gradient(to right, #ff3157, #ff6d7e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+}
+
+[light-mode="dark"] .feature-card {
+    background: #2d2d2d;
+    color: #f0f0f0;
+}
+
+[light-mode="dark"] .feature-showcase {
+    background-color: #1a1a1a;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.querySelector('.chat-container');
+    const chatHeader = document.querySelector('.chat-header');
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    
+    // Toggle chat open/close
+    chatHeader.addEventListener('click', function() {
+        chatContainer.classList.toggle('open');
+    });
+    
+    // Function to add message to chat
+    function addMessage(message, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+        
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.textContent = message;
+        
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return messageDiv;
+    }
+    
+    // Show typing indicator
+    function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.classList.add('typing-indicator');
+        indicator.id = 'typing-indicator';
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('typing-dot');
+            indicator.appendChild(dot);
+        }
+        
+        chatMessages.appendChild(indicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Remove typing indicator
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+    
+    // Send message to API with streaming support
+    async function sendToChatAPI(userMessage) {
+        // Create a new message element for the bot's response
+        showTypingIndicator();
+        
+        try {
+            const response = await fetch('http://localhost:1234/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: "lmstudio-community/gemma-2-2b-it-GGUF/gemma-2-2b-it-Q4_K_M.gguf",
+                    messages: [
+                        { role: "system", content: "You are a helpful healthcare assistant that provides medical information and advice. Keep responses concise and helpful." },
+                        { role: "user", content: userMessage }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: -1,
+                    stream: true
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // Remove typing indicator
+            removeTypingIndicator();
+            
+            // Create message container for bot response
+            const botMessageDiv = addMessage('', false);
+            const botMessageContent = botMessageDiv.querySelector('.message-content');
+            
+            // Get response reader and process chunks
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let responseText = '';
+            
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                // Decode the chunk
+                const chunk = decoder.decode(value, { stream: true });
+                
+                // Process each line in the chunk
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.startsWith('data:') && line !== 'data: [DONE]') {
+                        try {
+                            // Extract the JSON part
+                            const jsonStr = line.substring(5).trim();
+                            if (!jsonStr) continue;
+                            
+                            const data = JSON.parse(jsonStr);
+                            if (data.choices && data.choices[0].delta && data.choices[0].delta.content) {
+                                const content = data.choices[0].delta.content;
+                                responseText += content;
+                                botMessageContent.textContent = responseText;
+                                
+                                // Scroll to bottom as message grows
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing streaming response:', e, line);
+                        }
+                    }
+                }
+            }
+            
+            // If no response was received, show an error message
+            if (!responseText) {
+                botMessageContent.textContent = "I'm sorry, I couldn't generate a response. Please try again.";
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            removeTypingIndicator();
+            addMessage("I'm sorry, I couldn't connect to the AI service. Please check your connection and try again.", false);
+        }
+    }
+    
+    // Handle send button click
+    chatSend.addEventListener('click', async function() {
+        const message = chatInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message
+        addMessage(message, true);
+        chatInput.value = '';
+        
+        // Get response from API
+        await sendToChatAPI(message);
+    });
+    
+    // Handle enter key press
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            chatSend.click();
+        }
+    });
+    
+    // Open chat on initial load after a delay
+    setTimeout(() => {
+        chatContainer.classList.add('open');
+        // Then close it after 3 seconds to show the bubble effect
+        setTimeout(() => {
+            chatContainer.classList.remove('open');
+        }, 3000);
+    }, 2000);
+});
+</script>
+</body></html>
